@@ -24,7 +24,9 @@
     <?php
         require_once('conn.php');
         $con = new mysqli("127.0.0.1", "root", "newpassword", "mydb");
-        $jap = $con->query("SELECT jap FROM myTable WHERE id = 1")->fetch_object()->jap;
+        $sql = "SELECT jap FROM myTable WHERE id = 1";
+        $jap = $con->query($sql)->fetch_object()->jap;
+        
         echo "$jap <br/>";
     ?>
 
