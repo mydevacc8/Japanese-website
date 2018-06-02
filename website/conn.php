@@ -1,6 +1,8 @@
 <?php
+
 function db_connect() {
 
+    
         // Define connection as a static variable, to avoid connecting more than once 
     static $connection;
 

@@ -3,51 +3,55 @@
     <head>
 
         <title>Japanese Vocab V0</title>
-
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="genstyle.css">
     </head>
 
     <body>
+        <!-- Temperory solution until I work out how to use ajax  -->
+        <div class="container">
+        <form action="" method="post">
+            <div class="form-group">
+                <label for="size">Number of words</label>
+                <input type="text" class="form-control input-lg" name="size" id="size"/>
+                <br/>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </div>
+        </form>
+        </div>
 
-        <?php
+<?php
 
-            $english = array("Pencil", "Umbrella", "Bag", "Shoes");
-            $jap = array("えんぴつ", "かさ", "かばん", "くつ");
-            $toSend = array();
+    require_once('conn.php');
 
-            $i = 0;
-            
-            while ($i < 3){
-                $found = false;
-                $val = rand(0,count($english)-1);
+    $size = $_POST["size"]; // user input
 
-                for($j = 0; $j < count($toSend); $j++){
+    // getting size of the db
+    $getMaxIdQuery = "SELECT id FROM mytable WHERE id = (SELECT MAX(id) FROM mytable)";
 
-                    if ($toSend[$j] == $val){
-                        $found = true;
-                        break;
-                    }
-                }
+    $result=mysqli_query($connection, "SELECT count(*) as total from mytable");
+    $data=mysqli_fetch_assoc($result);
+    $count = $data['total'];
 
-                if ($found == false){
-                    array_push($toSend, $val);
-                    $i++;
-                }
+    // checks if user input is greater than the db size
+    if ($size > $count){
+        $size = $count;
+    }
 
-                
+    $toSend = array();
 
-            }
+    $getWordsQuery = "SELECT id FROM mytable ORDER BY RAND() LIMIT $size";
+    $result = $connection->query($getWordsQuery); 
 
-            $k = implode('', $toSend);
-            
-        ?>
-        <!--So as an idea use id of the words in sql as a code, sepearte them by a coma probs -->
-        <h1>English -> Japanese (hiragana)</h1>
-        <button onclick=" window.open('newpdf.php?type=que&lang=eng&words=<?php echo $k; ?>')" type="button">Question</button>
-        <button onclick=" window.open('newpdf.php?type=ans&lang=eng&words=<?php echo $k; ?>')" type="button">Answers</button>
-
-        <h1>Japanese (hiragana) -> English</h1>
-        <button onclick=" window.open('newpdf.php?type=que&lang=jap&words=<?php echo $k; ?>')" type="button">Question</button>
-        <button onclick=" window.open('newpdf.php?type=ans&lang=jap&words=<?php echo $k; ?>')" type="button">Answers</button>
-
-    </body>
-</html>
+    // Chnages look of the page depending if the input was correct
+    if ($result != ''){
+        // get the random ids and add them to toSend list
+        while($row = $result->fetch_array()) {
+            array_push($toSend,$row['id']);
+        } 
+        $k = implode(',', $toSend); //List that is used in the url
+        include 'includes/genbottom.php';
+    }else{
+        include 'includes/genbottomtext.php';
+    }
+?>
