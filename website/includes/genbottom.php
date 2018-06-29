@@ -15,7 +15,7 @@
 
             <div><br/></div>
 
-            <button onclick="window.location='http://localhost/Japanese-website/website/index.php'" class="btn btn-default">Back</button>
+            <button onclick="window.location='http://localhost/Japanese-website/website/index.php'" class="btn btn-primary">Back</button>
 
         </div>
         

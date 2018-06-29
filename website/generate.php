@@ -15,7 +15,7 @@
                 <label for="size">Number of words</label>
                 <input type="text" class="form-control input-lg" name="size" id="size"/>
                 <br/>
-                <button type="submit" class="btn btn-default">Submit</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </form>
         </div>
@@ -24,7 +24,13 @@
 
     require_once('conn.php');
 
-    $size = $_POST["size"]; // user input
+    // Checks if size exits (prevents error being printed)
+    if (isset($_POST['size'])&& $_POST['size'] != ''){
+        $size = $_POST["size"];
+    }else{
+        $size = NULL;
+    }
+    
 
     // getting size of the db
     $getMaxIdQuery = "SELECT id FROM mytable WHERE id = (SELECT MAX(id) FROM mytable)";

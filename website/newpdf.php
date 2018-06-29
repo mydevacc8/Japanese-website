@@ -8,6 +8,15 @@ require_once('tcpdf/tcpdf_import.php');
 class MYPDF extends TCPDF {
 
     public function drawPdf($lhsLang, $type, $words){
+
+        if (!isset($max_width)){
+            $max_width = 0;
+        }
+
+        if (!isset($max_height)){
+            $max_height = 0;
+        }
+
         $connection = new mysqli('127.0.0.1','root','newpassword','mydb');
         $this->SetCellPadding(0);
 
@@ -26,8 +35,8 @@ class MYPDF extends TCPDF {
             
             array_push($wordArrEng, $engWord);
 
-            $getJapWordQuery = "SELECT jap FROM mytable WHERE id = $ii";
-            $japWord = $connection->query($getJapWordQuery)->fetch_object()->jap;
+            $getJapWordQuery = "SELECT kana FROM mytable WHERE id = $ii";
+            $japWord = $connection->query($getJapWordQuery)->fetch_object()->kana;
             
             array_push($wordArrJap, $japWord);
 
@@ -124,15 +133,11 @@ class MYPDF extends TCPDF {
 // create new PDF document
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-echo $engWord;
+//echo $engWord;
 
 $lhsLang = $_GET['lang'];
 $type = $_GET['type'];
 $words = $_GET['words'];
-
-// temperory arrays with vocab
-$english = array("Pencil", "Umbrella", "Bag", "Shoes");
-$jap = array("えんぴつ", "かさ", "かばん", "くつ");
 
 // add a page
 $pdf->AddPage();
